@@ -1,4 +1,4 @@
-package com.gyt.learningandroidopengl.utils
+package com.gyt.learnandroidopengl.utils
 
 import android.opengl.GLES20
 import android.util.Log
@@ -30,7 +30,7 @@ object ShaderUtil {
 
         // 2.获取创建状态
         if (shaderObjectId == 0) {
-            Log.w(TAG, "Could not create new shader")
+            Log.e(TAG, "Could not create new shader")
             return 0
         }
 
@@ -50,7 +50,7 @@ object ShaderUtil {
         if (compileStatus[0] == 0) {
             // 如果编译失败，则删除创建的着色器对象
             GLES20.glDeleteShader(shaderObjectId)
-            Log.w(TAG, "Compilation of shader failed")
+            Log.e(TAG, "Compilation of shader failed")
             // 7.返回着色器对象：失败，为0
             return 0
         }
@@ -64,7 +64,7 @@ object ShaderUtil {
 
         // 2.获取创建状态
         if (programObjectId == 0) {
-            Log.w(TAG, "Could not create new program")
+            Log.e(TAG, "Could not create new program")
             return 0
         }
 
@@ -86,7 +86,7 @@ object ShaderUtil {
         if (linkStatus[0] == 0) {
             // 链接失败则删除程序对象
             GLES20.glDeleteProgram(programObjectId)
-            Log.w(TAG, "Linking of program failed")
+            Log.e(TAG, "Linking of program failed")
             // 7.返回程序对象：失败，为0
             return 0
         }

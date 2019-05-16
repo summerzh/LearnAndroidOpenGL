@@ -1,4 +1,4 @@
-package com.gyt.learningandroidopengl
+package com.gyt.learnandroidopengl
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4

@@ -1,7 +1,6 @@
-package com.gyt.learningandroidopengl.renderer
+package com.gyt.learnandroidopengl.renderer
 
 import android.opengl.GLES20
-import com.gyt.learningandroidopengl.utils.ShaderUtil
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -11,9 +10,9 @@ import javax.microedition.khronos.opengles.GL10
 /**
  * @author gyt
  * @date on 2019-05-15 11:36
- * @describer 画直线m
+ * @describer 画点、直线和三角形
  */
-class P2_TriangleRenderer : ShapeRenderer() {
+class P2_ShapeRenderer : BaseRenderer() {
 
     companion object {
         private val VERTEX_SHADER = """
@@ -37,7 +36,7 @@ class P2_TriangleRenderer : ShapeRenderer() {
         private const val V_POSITION = "v_Position"
 
         /**
-         * 三个顶点的坐标
+         * 五个顶点的坐标
          */
         private val POINT_DATA = floatArrayOf(
             0.0f, 0.0f,
@@ -65,9 +64,9 @@ class P2_TriangleRenderer : ShapeRenderer() {
         private const val BYTE_PER_FLOAT = 4
 
         private var POINT_TOTAL_NUM = POINT_DATA.size / 2
-    }
 
-    private var mProgram: Int = 0
+
+    }
 
     private var mVPositionHandle: Int = 0
 
@@ -87,14 +86,14 @@ class P2_TriangleRenderer : ShapeRenderer() {
         }
 
 
+    /**
+     * 在小米高版本的手机上会出现[onDrawFrame]调用两次的问题，所以最好不要在该方法中定义修改全局变量
+     */
     override fun onDrawFrame(gl: GL10?) {
-        println("onDrawFrame")
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
+        super.onDrawFrame(gl)
 
-        GLES20.glUseProgram(mProgram)
-
-        mVPositionHandle = GLES20.glGetAttribLocation(mProgram, V_POSITION)
-        mVColorHandle = GLES20.glGetUniformLocation(mProgram, V_COLOR)
+        mVPositionHandle = getAttriHandle(V_POSITION)
+        mVColorHandle = getUniformHandle(V_COLOR)
 
         GLES20.glVertexAttribPointer(
             mVPositionHandle,
@@ -103,7 +102,6 @@ class P2_TriangleRenderer : ShapeRenderer() {
             false,
             0,
             mVertexBuffer
-
         )
 
         GLES20.glEnableVertexAttribArray(mVPositionHandle)
@@ -118,26 +116,19 @@ class P2_TriangleRenderer : ShapeRenderer() {
         drawTriangle()
         drawPoint()
 
-//        GLES20.glDisableVertexAttribArray(mVPositionHandle)
+        GLES20.glDisableVertexAttribArray(mVPositionHandle)
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-        GLES20.glViewport(0, 0, width, height)
-        println("onSurfaceChanged")
+        super.onSurfaceChanged(gl, width, height)
     }
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
-        println("onSurfaceCreated")
-        GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f)
-
-        val vertexShader = ShaderUtil.compileVertexShader(VERTEX_SHADER)
-        val fragmentShader = ShaderUtil.compileFragmentShader(FRAGMENT_SHADER)
-
-        mProgram = ShaderUtil.linkProgram(vertexShader, fragmentShader)
+        super.onSurfaceCreated(gl, config)
+        buildProgram(VERTEX_SHADER, FRAGMENT_SHADER)
     }
 
     private fun drawPoint() {
-        println("pointCount: $mPointCount")
         GLES20.glUniform4fv(mVColorHandle, 1, POINT_COLOR, 0)
         GLES20.glDrawArrays(GLES20.GL_POINTS, 0, mPointCount)
     }
@@ -152,5 +143,4 @@ class P2_TriangleRenderer : ShapeRenderer() {
         GLES20.glUniform4fv(mVColorHandle, 1, SOLID_COLOR, 0)
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, mPointCount)
     }
-
 }

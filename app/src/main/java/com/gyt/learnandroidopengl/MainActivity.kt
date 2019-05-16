@@ -1,4 +1,4 @@
-package com.gyt.learningandroidopengl
+package com.gyt.learnandroidopengl
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity

@@ -1,7 +1,7 @@
-package com.gyt.learningandroidopengl.renderer
+package com.gyt.learnandroidopengl.renderer
 
 import android.opengl.GLES20
-import com.gyt.learningandroidopengl.utils.ShaderUtil
+import com.gyt.learnandroidopengl.utils.ShaderUtil
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -11,9 +11,9 @@ import javax.microedition.khronos.opengles.GL10
 /**
  * @author gyt
  * @date on 2019-05-14 17:38
- * @describer TODO
+ * @describer 绘制最基础的点
  */
-class P1_PointRenderer : ShapeRenderer() {
+class P1_PointRenderer : BaseRenderer() {
 
     companion object {
         /**
@@ -31,7 +31,7 @@ class P1_PointRenderer : ShapeRenderer() {
         """.trimIndent()
 
         /**
-         * 片段着色器
+         * 片元着色器
          */
         private val FRAGMENT_SHADER = """
             precision mediump float;
@@ -59,7 +59,7 @@ class P1_PointRenderer : ShapeRenderer() {
 
     }
 
-    // Set color with red, green, blue and alpha (opacity) values
+    // 设置颜色，四个参数分别是 red green blue and alpha
     private val color = floatArrayOf(1.0f, 0.0f, 0.0f, 1.0f)
 
     private var mProgram: Int = 0

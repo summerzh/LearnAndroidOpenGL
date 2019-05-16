@@ -1,4 +1,4 @@
-package com.gyt.learningandroidopengl
+package com.gyt.learnandroidopengl
 
 import org.junit.Test
 
