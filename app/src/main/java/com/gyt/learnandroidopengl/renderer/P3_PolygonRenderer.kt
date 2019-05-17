@@ -12,7 +12,7 @@ import javax.microedition.khronos.opengles.GL10
  * @date on 2019-05-16 11:02
  * @describer 多边形
  */
-class P3_PolygonRenderer : BaseRenderer() {
+open class P3_PolygonRenderer : BaseRenderer() {
 
     companion object {
         private val VERTEXT_SHADER = """
@@ -48,16 +48,23 @@ class P3_PolygonRenderer : BaseRenderer() {
 
         private const val V_POSITION = "v_Position"
 
-        private val COLOR = floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
+        private val LINE_COLOR = floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
+
+        private val SOLID_COLOR = floatArrayOf(0.0f, 0.0f, 1.0f, 1.0f)
     }
 
     private var vertexCount = 3
+
+    private var mColorHandle = 0
+
+    open val vertexShader: String
+        get() = VERTEXT_SHADER
 
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         super.onSurfaceCreated(gl, config)
 
-        buildProgram(VERTEXT_SHADER, FRAGMENT_SHADER)
+        buildProgram(vertexShader, FRAGMENT_SHADER)
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
@@ -69,7 +76,7 @@ class P3_PolygonRenderer : BaseRenderer() {
         super.onDrawFrame(gl)
 
         val positionHandle = getAttriHandle(V_POSITION)
-        val uniformHandle = getUniformHandle(V_COLOR)
+        mColorHandle = getUniformHandle(V_COLOR)
 
         GLES20.glVertexAttribPointer(
             positionHandle,
@@ -80,23 +87,33 @@ class P3_PolygonRenderer : BaseRenderer() {
             assembleData()
         )
 
-        GLES20.glUniform4fv(uniformHandle, 1, COLOR, 0)
 
         GLES20.glEnableVertexAttribArray(positionHandle)
 
-        GLES20.glLineWidth(10.0f)
-        GLES20.glDrawArrays(GLES20.GL_LINE_LOOP, 0, vertexCount)
-
+        drawLine()
+        drawPolygon()
         GLES20.glDisableVertexAttribArray(positionHandle)
 
         vertexCount++
         if (vertexCount > VERTEX_TOTAL_NUM) vertexCount = 3
     }
 
+    private fun drawLine(){
+        GLES20.glUniform4fv(mColorHandle, 1, LINE_COLOR, 0)
+        GLES20.glLineWidth(2.0f)
+        GLES20.glDrawArrays(GLES20.GL_LINE_LOOP, 0, vertexCount)
+    }
+
+    private fun drawPolygon(){
+        GLES20.glUniform4fv(mColorHandle, 1, SOLID_COLOR, 0)
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, vertexCount)
+    }
+
+
     private fun assembleData(): FloatBuffer {
         val pointData = FloatArray(vertexCount * 2)
-        // 多边形每个角的度数
-        val degree: Int = 360 / vertexCount
+        // 多边形每个角的度数,要特别注意精度的问题，如果是Int类型导致不圆
+        val degree: Double = 360.toDouble() / vertexCount.toDouble()
 
         for (i in 0 until vertexCount) {
             // 多边形每个顶点的度数
@@ -106,6 +123,8 @@ class P3_PolygonRenderer : BaseRenderer() {
 
             pointData[i * 2] = (RADIUS * Math.cos(radian)).toFloat()
             pointData[i * 2 + 1] = (RADIUS * Math.sin(radian)).toFloat()
+
+            println("i: $i , vertexDegree: $vertexDegree")
         }
 
         return ByteBuffer
