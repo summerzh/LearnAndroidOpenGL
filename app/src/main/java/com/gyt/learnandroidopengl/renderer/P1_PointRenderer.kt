@@ -31,7 +31,7 @@ class P1_PointRenderer : BaseRenderer() {
         """.trimIndent()
 
         /**
-         * 片元着色器
+         * 片段着色器
          */
         private val FRAGMENT_SHADER = """
             precision mediump float;
@@ -49,7 +49,7 @@ class P1_PointRenderer : BaseRenderer() {
          */
         private val POINT_DATA = floatArrayOf(0.0f, 0.0f)
         /**
-         * 点数据相关的分量个数，当前只有x，y，所以是2
+         * 点向量相关的分量个数，当前只有x，y，所以是2
          */
         private const val POINT_VECTOR_COUNT = 2
         /**
@@ -98,7 +98,7 @@ class P1_PointRenderer : BaseRenderer() {
     }
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
-        // 设置背景色
+        // 设置清空屏幕所用的颜色，清除颜色缓冲之后，整个颜色缓冲都会被填充为glClearColor里所设置的颜色
         GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f)
     }
 
@@ -109,6 +109,8 @@ class P1_PointRenderer : BaseRenderer() {
      */
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         println("thread name: " + Thread.currentThread().name)
+        // 设置窗口，告诉OpenGL渲染窗口的尺寸大小，
+        // 函数前两个参数控制窗口左下角的位置，第三个和第四个参数控制渲染窗口的宽度和高度（像素）
         GLES20.glViewport(0, 0, width, height)
 
         // 编译顶点着色器
@@ -122,7 +124,7 @@ class P1_PointRenderer : BaseRenderer() {
 
     override fun onDrawFrame(gl: GL10?) {
         println("onDrawFrame")
-        // 重新绘制背景色
+        // 清空屏幕的颜色缓冲，在每个新的渲染迭代开始的时候我们总是希望清屏，否则我们仍能看见上一次迭代的渲染结果
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
 
         // 通知OpenGL使用该程序
@@ -133,6 +135,8 @@ class P1_PointRenderer : BaseRenderer() {
         // 获取颜色Uniform在OpenGL中的句柄
         mVColorHandle = GLES20.glGetUniformLocation(mProgram, V_COLOR)
 
+
+        // OpenGL还不知道它该如何解释内存中的顶点数据，以及它该如何将顶点数据链接到顶点着色器的属性上。我们需要告诉OpenGL怎么做。
         // 将顶点坐标指针指向缓存数据，参数意思如下：
         // 1.顶点坐标句柄
         // 2.每个顶点所关联的分量个数（必须为1，2，3或4）

@@ -13,7 +13,7 @@ class Triangle : BaseActivity() {
     override fun getGLSurfaceView(): GLSurfaceView? {
         val glSurfaceView = MyGLSurfaceView(this)
 
-        glSurfaceView.setShapeRenderer(P5_BallRenderer::class.java)
+        glSurfaceView.setShapeRenderer(P6_2_GLSLRenderer::class.java)
         return glSurfaceView
     }
 

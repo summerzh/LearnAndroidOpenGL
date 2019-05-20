@@ -9,7 +9,7 @@ import android.util.Log
  * @describer 着色器工具类
  */
 object ShaderUtil {
-    private val TAG = "ShaderUtil"
+    private const val TAG = "ShaderUtil"
 
     /**
      * 编译顶点着色器
