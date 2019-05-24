@@ -1,5 +1,6 @@
 package com.gyt.learnandroidopengl.renderer
 
+import android.content.Context
 import android.opengl.GLES20
 import com.gyt.learnandroidopengl.utils.ShaderUtil
 import java.nio.ByteBuffer
@@ -13,7 +14,7 @@ import javax.microedition.khronos.opengles.GL10
  * @date on 2019-05-14 17:38
  * @describer 绘制最基础的点
  */
-class P1_PointRenderer : BaseRenderer() {
+class P1_PointRenderer(context: Context) : BaseRenderer(context) {
 
     companion object {
         /**
@@ -61,8 +62,6 @@ class P1_PointRenderer : BaseRenderer() {
 
     // 设置颜色，四个参数分别是 red green blue and alpha
     private val color = floatArrayOf(1.0f, 0.0f, 0.0f, 1.0f)
-
-    private var mProgram: Int = 0
 
     /**
      * 顶点坐标在OpenGL程序中句柄

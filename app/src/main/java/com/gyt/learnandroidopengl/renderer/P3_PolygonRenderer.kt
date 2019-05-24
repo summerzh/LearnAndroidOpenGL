@@ -1,5 +1,6 @@
 package com.gyt.learnandroidopengl.renderer
 
+import android.content.Context
 import android.opengl.GLES20
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -12,7 +13,7 @@ import javax.microedition.khronos.opengles.GL10
  * @date on 2019-05-16 11:02
  * @describer 多边形
  */
-open class P3_PolygonRenderer : BaseRenderer() {
+open class P3_PolygonRenderer(context: Context) : BaseRenderer(context) {
 
     companion object {
         private val VERTEXT_SHADER = """
@@ -64,7 +65,7 @@ open class P3_PolygonRenderer : BaseRenderer() {
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         super.onSurfaceCreated(gl, config)
 
-        buildProgram(vertexShader, FRAGMENT_SHADER)
+        createAndLinkProgram(vertexShader, FRAGMENT_SHADER)
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {

@@ -1,5 +1,6 @@
 package com.gyt.learnandroidopengl.renderer
 
+import android.content.Context
 import android.opengl.GLES20
 import android.opengl.Matrix
 import javax.microedition.khronos.egl.EGLConfig
@@ -10,7 +11,7 @@ import javax.microedition.khronos.opengles.GL10
  * @date on 2019-05-16 15:22
  * @describer 视图(camera view)和投影
  */
-class P4_ProjectionRenderer : P3_PolygonRenderer() {
+class P4_ProjectionRenderer(context: Context) : P3_PolygonRenderer(context) {
 
     companion object {
         private val VERTEX_SHADER = """

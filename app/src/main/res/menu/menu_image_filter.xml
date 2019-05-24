@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+            android:id="@+id/action_none"
+            android:title="@string/image_filter_none"
+            app:showAsAction="never"
+    />
+
+    <item
+            android:id="@+id/action_gray"
+            android:title="@string/image_filter_gray"
+            app:showAsAction="never"
+    />
+
+    <item
+            android:title="@string/image_filter_cool"
+            android:id="@+id/action_cool"
+            app:showAsAction="never"
+    />
+    <item
+            android:title="@string/image_filter_warm"
+            android:id="@+id/action_warm"
+            app:showAsAction="never"
+    />
+    <item
+            android:title="@string/image_filter_mosaic"
+            android:id="@+id/action_mosaic"
+            app:showAsAction="never"
+    />
+
+
+</menu>

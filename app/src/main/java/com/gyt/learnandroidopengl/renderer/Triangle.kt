@@ -2,6 +2,7 @@ package com.gyt.learnandroidopengl.renderer
 
 import android.opengl.GLSurfaceView
 import com.gyt.learnandroidopengl.BaseActivity
+import com.gyt.learnandroidopengl.image.P1_ImageRenderer
 
 /**
  * @author gyt
@@ -13,7 +14,7 @@ class Triangle : BaseActivity() {
     override fun getGLSurfaceView(): GLSurfaceView? {
         val glSurfaceView = MyGLSurfaceView(this)
 
-        glSurfaceView.setShapeRenderer(P6_2_GLSLRenderer::class.java)
+        glSurfaceView.setShapeRenderer(P1_ImageRenderer::class.java)
         return glSurfaceView
     }
 

@@ -1,5 +1,6 @@
 package com.gyt.learnandroidopengl.renderer
 
+import android.content.Context
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import com.gyt.learnandroidopengl.utils.ShaderUtil
@@ -12,8 +13,8 @@ import javax.microedition.khronos.opengles.GL10
  * @describer TODO
  */
 
-abstract class BaseRenderer : GLSurfaceView.Renderer{
-    private var mProgram: Int = 0
+abstract class BaseRenderer(val context: Context) : GLSurfaceView.Renderer{
+    internal var mProgram: Int = 0
 
     override fun onDrawFrame(gl: GL10?) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
@@ -32,7 +33,7 @@ abstract class BaseRenderer : GLSurfaceView.Renderer{
      * @param vertexShader: 顶点着色器
      * @param fragmentShader: 片元着色器
      */
-    fun buildProgram(vertexShader: String, fragmentShader: String){
+    fun createAndLinkProgram(vertexShader: String, fragmentShader: String){
 
         val vertexShader = ShaderUtil.compileVertexShader(vertexShader)
         val fragmentShader = ShaderUtil.compileFragmentShader(fragmentShader)
@@ -46,7 +47,7 @@ abstract class BaseRenderer : GLSurfaceView.Renderer{
      * 获取顶点坐标在OpenGL程序中句柄
      */
     fun getAttriHandle(attri: String): Int {
-        if(mProgram == 0) throw IllegalAccessException("Please call buildProgram() first!")
+        if(mProgram == 0) throw IllegalAccessException("Please call createAndLinkProgram() first!")
 
         return GLES20.glGetAttribLocation(mProgram, attri)
     }
@@ -55,7 +56,7 @@ abstract class BaseRenderer : GLSurfaceView.Renderer{
      * 获取颜色Uniform在OpenGL程序中的句柄
      */
     fun getUniformHandle(uniform: String): Int{
-        if(mProgram == 0) throw IllegalAccessException("Please call buildProgram() first!")
+        if(mProgram == 0) throw IllegalAccessException("Please call createAndLinkProgram() first!")
 
         return GLES20.glGetUniformLocation(mProgram, uniform)
     }

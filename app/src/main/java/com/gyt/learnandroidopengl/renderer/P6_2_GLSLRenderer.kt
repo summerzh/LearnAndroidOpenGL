@@ -1,5 +1,6 @@
 package com.gyt.learnandroidopengl.renderer
 
+import android.content.Context
 import android.opengl.GLES20
 import com.gyt.learnandroidopengl.utils.BufferUtil
 import java.nio.FloatBuffer
@@ -11,7 +12,7 @@ import javax.microedition.khronos.opengles.GL10
  * @date on 2019-05-20 16:43
  * @describer OpenGL Shading Language 着色器语言练习, 优化数据传递
  */
-class P6_2_GLSLRenderer : BaseRenderer() {
+class P6_2_GLSLRenderer(context: Context) : BaseRenderer(context) {
 
     companion object {
         private val VERTEX_SHADER = """
@@ -59,7 +60,7 @@ class P6_2_GLSLRenderer : BaseRenderer() {
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         super.onSurfaceCreated(gl, config)
 
-        buildProgram(VERTEX_SHADER, FRAGMENT_SHADER)
+        createAndLinkProgram(VERTEX_SHADER, FRAGMENT_SHADER)
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
@@ -73,6 +74,7 @@ class P6_2_GLSLRenderer : BaseRenderer() {
         val colorHandle = getAttriHandle("a_Color")
 
         // STRIDE：每次读取间隔是 (2个位置 + 3个颜色值) * Float占的Byte位
+        mPointData.position(0)//点击屏幕后调用requestRender(),会再次调用onDrawFrame，所以要重新赋值
         GLES20.glVertexAttribPointer(
             positionHandle,
             POSITION_COMPONENT_COUNT,

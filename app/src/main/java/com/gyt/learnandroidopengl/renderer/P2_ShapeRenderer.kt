@@ -1,5 +1,6 @@
 package com.gyt.learnandroidopengl.renderer
 
+import android.content.Context
 import android.opengl.GLES20
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -12,7 +13,7 @@ import javax.microedition.khronos.opengles.GL10
  * @date on 2019-05-15 11:36
  * @describer 画点、直线和三角形
  */
-class P2_ShapeRenderer : BaseRenderer() {
+class P2_ShapeRenderer(context: Context) : BaseRenderer(context) {
 
     companion object {
         private val VERTEX_SHADER = """
@@ -125,7 +126,7 @@ class P2_ShapeRenderer : BaseRenderer() {
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         super.onSurfaceCreated(gl, config)
-        buildProgram(VERTEX_SHADER, FRAGMENT_SHADER)
+        createAndLinkProgram(VERTEX_SHADER, FRAGMENT_SHADER)
     }
 
     private fun drawPoint() {

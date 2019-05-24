@@ -1,5 +1,6 @@
 package com.gyt.learnandroidopengl.renderer
 
+import android.content.Context
 import android.opengl.GLES20
 import android.opengl.Matrix
 import java.nio.ByteBuffer
@@ -13,7 +14,7 @@ import javax.microedition.khronos.opengles.GL10
  * @date on 2019-05-17 16:02
  * @describer 绘制球
  */
-class P5_BallRenderer : BaseRenderer() {
+class P5_BallRenderer(context: Context) : BaseRenderer(context) {
 
     companion object {
         private val VERTEX_SHADER = """
@@ -63,7 +64,7 @@ class P5_BallRenderer : BaseRenderer() {
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         super.onSurfaceCreated(gl, config)
 
-        buildProgram(VERTEX_SHADER, FRAGMENT_SHADER)
+        createAndLinkProgram(VERTEX_SHADER, FRAGMENT_SHADER)
         mUMatrixHandle = getUniformHandle(U_MATRIX)
     }
 
