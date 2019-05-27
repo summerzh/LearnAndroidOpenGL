@@ -15,7 +15,7 @@ import javax.microedition.khronos.opengles.GL10
  * @date on 2019-05-23 17:02
  * @describer 图片处理：冷色调，暖色调，黑白，放大镜效果，马赛克
  */
-class P1_ImageRenderer(context: Context, var filter: Filter) : BaseRenderer(context) {
+class P1_ImageRenderer(context: Context) : BaseRenderer(context) {
 
     companion object {
         private val VERTEX_SHADER = """
@@ -37,6 +37,8 @@ class P1_ImageRenderer(context: Context, var filter: Filter) : BaseRenderer(cont
             uniform int u_Type;
             uniform sampler2D u_Texture;
             varying vec2 v_TexCoord;
+            const vec2 TexSize = vec2(400.0, 400.0);
+            const vec2 mosaicSize = vec2(10.0, 10.0);
 
             void modifyColor(vec4 color) {
                 color.r = max(min(color.r, 1.0), 0.0);
@@ -55,7 +57,16 @@ class P1_ImageRenderer(context: Context, var filter: Filter) : BaseRenderer(cont
                     modifyColor(color);
                     gl_FragColor = color;
                 }else if(u_Type == 3){
+                    // 这段代码的关键是借助floor操作符(向下取整)，比如0.0-0.9之间都取0.0，那么长和宽都为mosaicSize的正方形内的纹理坐标就是同一个点的值
+                    // 该正方形的颜色就是那个点的颜色，从而实现了马赛克效果
+                    vec2 intXY = vec2(v_TexCoord.x * TexSize.x, v_TexCoord.y * TexSize.y);
+                    vec2 XYMosaic = vec2(floor(intXY.x / mosaicSize.x) * mosaicSize.x, floor(intXY.y / mosaicSize.y) * mosaicSize.y);
+                    vec2 UVMosaic = vec2(XYMosaic.x / TexSize.x, XYMosaic.y / TexSize.y);
 
+                    // 不可以写成这样，因为这个计算结果一直是（0，0）
+                    // vec2 xy = vec2(floor(v_TexCoord.x / mosaicSize.x) * mosaicSize.x, floor(v_TexCoord.y / mosaicSize.y) * mosaicSize.y);
+                    vec4 color = texture2D(u_Texture, UVMosaic);
+                    gl_FragColor = color;
                 }else{
                     gl_FragColor = v_Color;
                 }
@@ -83,6 +94,8 @@ class P1_ImageRenderer(context: Context, var filter: Filter) : BaseRenderer(cont
     private val mChangeColorBuffer = BufferUtil.createFloatBuffer(CHANGE_COLOR)
 
     private lateinit var mProjectionHelper: ProjectionHelper
+
+    private lateinit var filter: Filter
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         super.onSurfaceCreated(gl, config)
@@ -144,11 +157,31 @@ class P1_ImageRenderer(context: Context, var filter: Filter) : BaseRenderer(cont
 
     }
 
-    enum class Filter(val type: Int, val floatArray: FloatArray) {
+    fun setFilter(filter: Filter) {
+        this.filter = filter
+    }
+
+    /**
+     * 设置冷色调的程度
+     */
+    fun setCoolProgress(precess: Float) {
+        this.filter = Filter.COOL
+        filter.floatArray = floatArrayOf(0.0f, 0.0f, precess)
+    }
+
+    /**
+     * 设置暖色调的程度
+     */
+    fun setWarmProgress(process: Float) {
+        this.filter = Filter.WARM
+        filter.floatArray = floatArrayOf(process, process, 0.0f)
+    }
+
+    enum class Filter(val type: Int, var floatArray: FloatArray) {
         NONE(0, floatArrayOf(0.0f, 0.0f, 0.0f)),
         GRAY(1, floatArrayOf(0.299f, 0.587f, 0.114f)),
         COOL(2, floatArrayOf(0.0f, 0.0f, 0.1f)),
         WARM(2, floatArrayOf(0.1f, 0.1f, 0.0f)),
-        MOSAIC(3, floatArrayOf(0.1f, 0.1f, 0.0f)),
+        MOSAIC(3, floatArrayOf(0.0f, 0.0f, 0.0f)),
     }
 }
