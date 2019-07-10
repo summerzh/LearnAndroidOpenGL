@@ -55,6 +55,7 @@ class ImageActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
             }
         })
+
     }
 
 
